@@ -1,0 +1,57 @@
+﻿@page "/adminlogin"
+@rendermode InteractiveServer
+@inject MyCustomAuthStateProvider Auth
+@inject NavigationManager Nav
+
+<PageTitle>Admin Login</PageTitle>
+
+<div class="login-container">
+    <div class="login-box">
+        <h2>Admin Login</h2>
+
+        @if (!string.IsNullOrEmpty(Error))
+        {
+            <div class="error-box">@Error</div>
+        }
+
+        <div class="input-group">
+            <label>Email</label>
+            <input @bind="Email" type="text" />
+        </div>
+
+        <div class="input-group">
+            <label>Passwort</label>
+            <input @bind="Password" type="password" />
+        </div>
+
+        <button class="login-button" @onclick="HandleLogin">
+            Login
+        </button>
+        <div class="forgot-password-wrapper">
+            <a href="/adminforgot">Passwort vergessen?</a>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private string Email = "";
+    private string Password = "";
+    private string Error = "";
+
+    private void HandleLogin()
+    {
+        // Beispiel
+        if (Email == "admin@test.com" && Password == "1234")
+        {
+            Auth.Login(Email);
+            Nav.NavigateTo("/admin");
+        }
+        else
+        {
+            Error = "Falscher Benutzername oder Passwort.";
+        }
+    }
+}
+
+

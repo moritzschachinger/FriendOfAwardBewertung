@@ -1,0 +1,98 @@
+﻿/* Hintergrund */
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Box */
+.login-box {
+    background: white;
+    padding: 40px;
+    width: 360px;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+    /* Titel */
+    .login-box h2 {
+        margin-bottom: 25px;
+        color: #333;
+        font-weight: 600;
+    }
+
+/* Fehleranzeige */
+.error-box {
+    margin-bottom: 15px;
+    padding: 10px;
+    color: white;
+    background: #e63946;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* Input-Gruppen */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+    .input-group label {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: 0.2s;
+    }
+
+        .input-group input:focus {
+            border-color: #3a7bd5;
+            box-shadow: 0 0 5px rgba(58, 123, 213, 0.4);
+        }
+
+/* Login Button */
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background: #3a7bd5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .login-button:hover {
+        background: #2e6bb8;
+    }
+
+.forgot-password-wrapper {
+    margin-top: 15px;
+    text-align: right;
+}
+
+    .forgot-password-wrapper a {
+        color: #3a7bd5;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .forgot-password-wrapper a:hover {
+            text-decoration: underline;
+            color: #2e6bb8;
+        }
+
