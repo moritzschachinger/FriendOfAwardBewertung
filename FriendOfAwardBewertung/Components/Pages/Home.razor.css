@@ -1,0 +1,88 @@
+﻿<style >
+.title {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.note {
+    font-size: 12px;
+    color: gray;
+}
+
+.grid-container {
+    display: grid;
+    gap: 15px;
+    justify-content: center;
+    grid-template-columns: repeat(4, 140px);
+    margin-top: 20px;
+}
+
+.grid-button {
+    width: 140px;
+    height: 70px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 24px;
+    background-color: #e9e9e9;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+
+.favorite {
+    background-color: #48c35a !important;
+    color: white;
+    border: 3px solid #2e8c3f !important;
+}
+
+.topfavorite {
+    background-color: #ffb327 !important;
+    color: black;
+    border: 3px solid #e09300 !important;
+}
+
+.star-single {
+    position: absolute;
+    right: 10px;
+    bottom: 8px;
+    font-size: 20px;
+}
+
+.star-group {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    font-size: 18px;
+}
+
+.info {
+    text-align: center;
+    margin-top: 25px;
+    font-weight: bold;
+}
+
+.submit-button {
+    display: block;
+    margin: 25px auto;
+    padding: 14px 30px;
+    font-size: 18px;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+    .submit-button:hover {
+        background-color: #0d7ad8;
+    }
+
+</style >
