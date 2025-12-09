@@ -1,4 +1,5 @@
 ﻿@page "/adminlogin"
+@using System.Data
 @rendermode InteractiveServer
 @inject MyCustomAuthStateProvider Auth
 @inject NavigationManager Nav
@@ -9,19 +10,19 @@
     <div class="login-box">
         <h2>Admin Login</h2>
 
-        @if (!string.IsNullOrEmpty(Error))
+        @if (!string.IsNullOrEmpty(error))
         {
-            <div class="error-box">@Error</div>
+            <div class="error-box">@error</div>
         }
 
         <div class="input-group">
             <label>Email</label>
-            <input @bind="Email" type="text" />
+            <input @bind="email" type="text" />
         </div>
 
         <div class="input-group">
             <label>Passwort</label>
-            <input @bind="Password" type="password" />
+            <input @bind="password" type="password" />
         </div>
 
         <button class="login-button" @onclick="HandleLogin">
@@ -35,22 +36,47 @@
 </div>
 
 @code {
-    private string Email = "";
-    private string Password = "";
-    private string Error = "";
+    private string email = "";
+    private string password = "";
+    private string error = "";
 
     private void HandleLogin()
     {
         // Beispiel
-        if (Email == "admin@test.com" && Password == "1234")
+        if (HandleLogin(email, password))
         {
-            Auth.Login(Email);
+            Auth.Login(email);
             Nav.NavigateTo("/admin");
         }
         else
         {
-            Error = "Falscher Benutzername oder Passwort.";
+            error = "Falscher Benutzername oder Passwort.";
         }
+    }
+    private bool HandleLogin(string email, string password)
+    {
+        try
+        {
+            DbWrapperMySqlV2 wrapper = DbWrapperMySqlV2.Wrapper;
+            string sql = $"SELECT email, password_hash FROM admin_users WHERE email = '{email}'";
+
+            DataTable dt = wrapper.RunQuery(sql);
+
+            if (dt == null || dt.Rows.Count == 0)return false;
+
+            bool ok = BCrypt.Net.BCrypt.Verify(password, dt.Rows[0][1].ToString());
+            if (!ok)
+            {
+                return false;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+        return true;
     }
 }
 
