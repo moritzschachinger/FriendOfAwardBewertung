@@ -1,6 +1,13 @@
-﻿@page "/admin"
-<h3>Admin</h3>
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveServer
+@page "/admin"
 
-@code {
-
-}
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <p>Hallo Admin</p>    
+    </Authorized>
+    <NotAuthorized>
+        <h1 style="color:red">Not Authorized to enter this page</h1>
+    </NotAuthorized>
+</AuthorizeView>
