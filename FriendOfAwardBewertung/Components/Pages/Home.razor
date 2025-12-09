@@ -11,7 +11,7 @@
 </div>
 
 <div class="grid-container">
-    @foreach (var number in Numbers)
+    @foreach (int number in Numbers)
     {
         <button class="grid-button @(GetButtonClass(number))"
                 @onclick="@(() => OnClick(number))"
