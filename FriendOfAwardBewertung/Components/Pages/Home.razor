@@ -1,40 +1,54 @@
 ﻿@rendermode InteractiveServer
 @page "/"
+@using Microsoft.AspNetCore.Components.Authorization
 
-<h1 class="title">Friends of Award</h1>
 
-<div class="subtitle">
-    Geben Sie uns Ihre persönlichen Favoriten bekannt!<br />
-    <strong>Einfacher Klick = Favorit (max. 5)</strong><br />
-    <strong>Doppelklick = Topfavorit (max. 1)</strong><br />
-    <span class="note">Diese Abstimmung ist anonym und auf ein Gerät beschränkt.</span>
-</div>
+@inject NavigationManager Nav
+@inject TokenService TokenService
+@inject MyCustomAuthStateProvider Auth
 
-<div class="grid-container">
-    @foreach (int number in Numbers)
-    {
-        <button class="grid-button @(GetButtonClass(number))"
-                @onclick="@(() => OnClick(number))"
-                @ondblclick="@(() => OnDoubleClick(number))">
-            <span>@number</span>
+<AuthorizeView Roles="User">
+    <Authorized>
+        <h1 class="title">Friends of Award</h1>
 
-            @if (Topfavorit == number)
+        <div class="subtitle">
+            Geben Sie uns Ihre persönlichen Favoriten bekannt!<br />
+            <strong>Einfacher Klick = Favorit (max. 5)</strong><br />
+            <strong>Doppelklick = Topfavorit (max. 1)</strong><br />
+            <span class="note">Diese Abstimmung ist anonym und auf ein Gerät beschränkt.</span>
+        </div>
+
+        <div class="grid-container">
+            @foreach (int number in Numbers)
             {
-                <span class="star-group">⭐⭐</span>
-            }
-            else if (Favorites.Contains(number))
-            {
-                <span class="star-single">⭐</span>
-            }
-        </button>
-    }
-</div>
+                <button class="grid-button @(GetButtonClass(number))"
+                        @onclick="@(() => OnClick(number))"
+                        @ondblclick="@(() => OnDoubleClick(number))">
+                    <span>@number</span>
 
-<div class="info">
-    Offen: @RemainingFavorites Favoriten, @RemainingTopfavorit Topfavorit
-</div>
+                    @if (Topfavorit == number)
+                    {
+                        <span class="star-group">⭐⭐</span>
+                    }
+                    else if (Favorites.Contains(number))
+                    {
+                        <span class="star-single">⭐</span>
+                    }
+                </button>
+            }
+        </div>
 
-<button class="submit-button">Bewertung absenden</button>
+        <div class="info">
+            Offen: @RemainingFavorites Favoriten, @RemainingTopfavorit Topfavorit
+        </div>
+
+        <button class="submit-button">Bewertung absenden</button>
+    </Authorized>
+
+    <NotAuthorized>
+        <p>Bitte gültigen QR-Code scannen</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<int> Numbers = Enumerable.Range(1, 20).ToList();

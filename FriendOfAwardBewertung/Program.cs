@@ -16,6 +16,8 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<MyCustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
   provider.GetRequiredService<MyCustomAuthStateProvider>());
+builder.Services.AddScoped<TokenService>();
+
 
 var app = builder.Build();
 

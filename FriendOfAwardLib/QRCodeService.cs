@@ -4,10 +4,7 @@ using System.Drawing.Imaging;
 
 public class QRCodeService
 {
-    public string GenerateToken()
-    {
-        return Guid.NewGuid().ToString("N"); // 32 Zeichen
-    }
+ 
 
     public byte[] GenerateQRCodeImage(string url)
     {

@@ -1,0 +1,38 @@
+﻿@page "/userlogin"
+
+@inject NavigationManager Nav
+@inject TokenService Tokens
+@inject MyCustomAuthStateProvider Auth
+
+<p>Login wird geprüft…</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // ?code=XYZ123
+        var uri = Nav.ToAbsoluteUri(Nav.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        string token = query["code"];
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            //Nav.NavigateTo("/error", true);
+            return;
+        }
+
+        // Token prüfen
+        bool ok = Tokens.ValidateToken(token);
+
+        if (!ok)
+        {
+            //Nav.NavigateTo("/invalid", true);
+            return;
+        }
+
+        // Login als User
+        Auth.LoginUser(token);
+
+        // Weiterleitung zur User-Seite
+        Nav.NavigateTo("/", true);
+    }
+}
