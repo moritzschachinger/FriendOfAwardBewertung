@@ -11,18 +11,18 @@
 </div>
 
 <div class="grid-container">
-    @foreach (var number in Numbers)
+    @foreach (var number in numbers)
     {
         <button class="grid-button @(GetButtonClass(number))"
                 @onclick="@(() => OnClick(number))"
                 @ondblclick="@(() => OnDoubleClick(number))">
             <span>@number</span>
 
-            @if (Topfavorit == number)
+            @if (topfavorit == number)
             {
                 <span class="star-group">⭐⭐</span>
             }
-            else if (Favorites.Contains(number))
+            else if (favorites.Contains(number))
             {
                 <span class="star-single">⭐</span>
             }
@@ -31,53 +31,57 @@
 </div>
 
 <div class="info">
-    Offen: @RemainingFavorites Favoriten, @RemainingTopfavorit Topfavorit
+    Offen: @remainingFavorites Favoriten, @remainingTopfavorit Topfavorit
 </div>
 
-<button class="submit-button">Bewertung absenden</button>
+<button class="submit-button" @onclick="Btn_BewertungAbsenden">Bewertung absenden</button>
 
 @code {
-    private List<int> Numbers = Enumerable.Range(1, 20).ToList();
+    private List<int> numbers = Enumerable.Range(1, 20).ToList();
 
-    private HashSet<int> Favorites = new();
-    private int? Topfavorit = null;
+    private HashSet<int> favorites = new();
+    private int? topfavorit = null;
 
-    private int RemainingFavorites => 5 - Favorites.Count;
-    private int RemainingTopfavorit => Topfavorit == null ? 1 : 0;
+    private int remainingFavorites => 5 - favorites.Count;
+    private int remainingTopfavorit => topfavorit == null ? 1 : 0;
 
     private void OnClick(int number)
     {
         // Falls es der Topfavorit ist → entfernen
-        if (Topfavorit == number)
+        if (topfavorit == number)
         {
-            Topfavorit = null;
+            topfavorit = null;
             return;
         }
 
         // Favorit toggeln
-        if (Favorites.Contains(number))
+        if (favorites.Contains(number))
         {
-            Favorites.Remove(number);
+            favorites.Remove(number);
         }
-        else if (Favorites.Count < 5)
+        else if (favorites.Count < 5)
         {
-            Favorites.Add(number);
+            favorites.Add(number);
         }
     }
 
     private void OnDoubleClick(int number)
     {
         // Doppelklick setzt neuen Topfavoriten
-        Topfavorit = number;
+        topfavorit = number;
 
         // Falls der schon Favorit war → entfernen
-        Favorites.Remove(number);
+        favorites.Remove(number);
     }
 
     private string GetButtonClass(int number)
     {
-        if (Topfavorit == number) return "topfavorite";
-        if (Favorites.Contains(number)) return "favorite";
+        if (topfavorit == number) return "topfavorite";
+        if (favorites.Contains(number)) return "favorite";
         return "";
+    }
+    private void Btn_BewertungAbsenden()
+    {
+        
     }
 }

@@ -1,48 +1,9 @@
 ﻿@page "/admin"
-@using ClosedXML
 @using System.Text
 @rendermode InteractiveServer
 <h3>Admin</h3>
 
 
-<h3>Excel-Datei hochladen</h3>
-
-<InputFile OnChange="HandleFileSelected" />
-
-@if (excelData != null)
-{
-
-}
-
 @code {
-    private ExcelData? excelData;
 
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
-    {
-        var file = e.File;
-        using var stream = file.OpenReadStream(maxAllowedSize: 10_000_000); // 10 MB
-        excelData = ReadExcelWithClosedXml(stream);
-    }
-
-    private ExcelData ReadExcelWithClosedXml(Stream stream)
-    {
-        List<string[]> data = [];
-
-        using var workbook = new ClosedXML.Excel.XLWorkbook(stream);
-        var worksheet = workbook.Worksheets.First();
-
-        // Header auslesen
-
-        // Daten auslesen
-        data.Rows = worksheet.RowsUsed()
-                             .Select(r => r.Cells().Select(c => c.GetValue<string>()).ToArray())
-                             .ToList();
-
-        return data;
-    }
-
-    public class ExcelData
-    {
-
-    }
 }

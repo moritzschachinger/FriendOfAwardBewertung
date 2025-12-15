@@ -3,10 +3,7 @@ using FriendOfAwardBewertung.Components;
 
 // SPAA: für Authorization
 using Microsoft.AspNetCore.Components.Authorization;
-using OfficeOpenXml;
 
-ExcelPackage.License = new OfficeOpenXml.License.LicenseConfig()
-    .LoadFromJsonFile("epplus.json");
 
 var builder = WebApplication.CreateBuilder(args);
 
