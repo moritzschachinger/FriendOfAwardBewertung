@@ -2,19 +2,32 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using QRCoder;
 @inject TokenService Tokens
+@inject NavigationManager Nav
 @rendermode InteractiveServer
 @page "/admin"
 
-<AuthorizeView Roles="Admin">
+<AuthorizeView>
     <Authorized>
-        <p>Hallo Admin</p>    
-        <button class="btn" @onclick="GenerateQr">QR-Code erzeugen</button>
+        <div class="admin-layout">
 
-        @if (qrBytes != null)
-        {
-            <img src="data:image/png;base64,@Convert.ToBase64String(qrBytes)" />
-        }
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <h2>Admin</h2>
 
+                <nav>
+                    <button @onclick="@(() => GoTo("/dashboard"))">Dashboard</button>
+                    <button @onclick="@(() => GoTo("/qrcode"))">QR-Codes</button>
+                    <button @onclick="@(() => GoTo("/import"))">Excel Import</button>
+                    <button @onclick="@(() => GoTo("/export"))">Excel Export</button>
+
+                </nav>
+
+               
+            </aside>
+
+           
+
+        </div>
     </Authorized>
     <NotAuthorized>
         <h1 style="color:red">Not Authorized to enter this page</h1>
@@ -23,21 +36,15 @@
 
 @code{
 
-    private byte[]? qrBytes;
-    QRCodeService QRCode = new QRCodeService();
+    private string currentPage = "/admin";
 
-    private async Task GenerateQr()
+    void GoTo(string page)
     {
-        string token = Tokens.GenerateToken();
+        currentPage = page;
+        Nav.NavigateTo(currentPage);
 
-        string url = $"https://localhost:5001/userlogin?code={token}";
-
-        // Token in DB speichern
-        Tokens.SaveToken(token);
-        
-
-        // QR-Bild erzeugen
-        qrBytes = QRCode.GenerateQRCodeImage(url);
     }
+
+   
 
 }

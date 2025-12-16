@@ -1,0 +1,26 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView>
+    <Authorized>
+        <div class="admin-layout">
+            <aside class="sidebar">
+                <h2 class="logo">Admin</h2>
+
+                <NavLink href="/admin" Match="NavLinkMatch.All">Dashboard</NavLink>
+                <NavLink href="/admin/qrcode">QR-Codes</NavLink>
+                <NavLink href="/admin/import">Excel Import</NavLink>
+                <NavLink href="/admin/export">Excel Export</NavLink>
+            </aside>
+
+            <main class="content">
+                @Body
+            </main>
+        </div>
+    </Authorized>
+
+    <NotAuthorized>
+        <h1 style="color:red">Not Authorized to enter this page</h1>
+    </NotAuthorized>
+</AuthorizeView>
+

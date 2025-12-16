@@ -1,13 +1,13 @@
 ﻿@rendermode InteractiveServer
 @page "/"
 @using Microsoft.AspNetCore.Components.Authorization
-
+@using System.Security.Claims
 
 @inject NavigationManager Nav
 @inject TokenService TokenService
 @inject MyCustomAuthStateProvider Auth
 
-<AuthorizeView Roles="User">
+<AuthorizeView>
     <Authorized>
         <h1 class="title">Friends of Award</h1>
 
@@ -51,6 +51,13 @@
 </AuthorizeView>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await Auth.GetAuthenticationStateAsync();
+        var user = state.User;
+        Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
+        Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
+    }
     private List<int> Numbers = Enumerable.Range(1, 20).ToList();
 
     private HashSet<int> Favorites = new();

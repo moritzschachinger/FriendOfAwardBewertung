@@ -1,22 +1,28 @@
-﻿@page "/userlogin"
+﻿@rendermode InteractiveServer
+@page "/userlogin"
+@using System.Collections.Specialized
 
 @inject NavigationManager Nav
 @inject TokenService Tokens
 @inject MyCustomAuthStateProvider Auth
+
 
 <p>Login wird geprüft…</p>
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        // ?code=XYZ123
-        var uri = Nav.ToAbsoluteUri(Nav.Uri);
-        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        string token = query["code"];
+        Console.WriteLine($"Token prüfen");
 
+        // ?code=XYZ123
+        Uri uri = Nav.ToAbsoluteUri(Nav.Uri);
+        NameValueCollection query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        string token = query["code"];
+        Console.WriteLine(token);
         if (string.IsNullOrWhiteSpace(token))
         {
-            //Nav.NavigateTo("/error", true);
+            Console.WriteLine("Token nicht gültig");
+            Nav.NavigateTo("/", true);
             return;
         }
 
@@ -25,14 +31,20 @@
 
         if (!ok)
         {
+            Console.WriteLine("Token Validation fehlgeschlagen");
             //Nav.NavigateTo("/invalid", true);
             return;
         }
 
+        Console.WriteLine("Token OK");
+  
         // Login als User
-        Auth.LoginUser(token);
+        Auth.Login(token);
+
+        Tokens.MarkTokenAsUsed(token);
+        await Task.Yield();
 
         // Weiterleitung zur User-Seite
-        Nav.NavigateTo("/", true);
+        Nav.NavigateTo("/");
     }
 }

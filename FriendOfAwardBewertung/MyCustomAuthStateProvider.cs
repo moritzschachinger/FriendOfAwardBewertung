@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
+using System;
 using System.Security.Claims;
 
 namespace FriendOfAwardBewertung
@@ -15,34 +16,49 @@ namespace FriendOfAwardBewertung
         {
             return Task.FromResult(new AuthenticationState(_currentUser ?? _anonymous));
         }
-        public void LoginAdmin(string email)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, email),
-                new Claim(ClaimTypes.Role, "Admin")
-            };
+        //public void LoginAdmin(string email)
+        //{
+        //    Console.WriteLine("############### LOGIN ADMIN ###############");
+        //    List<Claim> claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.Name, email),
+        //        new Claim(ClaimTypes.Role, "Admin")
+        //    };
 
-            ClaimsIdentity identity = new ClaimsIdentity(claims, "AdminAuth");
-            _currentUser = new ClaimsPrincipal(identity);
-
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-        }
+        //    ClaimsIdentity identity = new ClaimsIdentity(claims, "AdminAuth");
+        //    _currentUser = new ClaimsPrincipal(identity);
 
 
-        public void LoginUser(string token)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, token),
-                new Claim(ClaimTypes.Role, "User")
-            };
+        //    Console.WriteLine("LoginUser: Claims:");
+        //    foreach (Claim? c in _currentUser.Claims)
+        //    {
+        //        Console.WriteLine($"{c.Type} = {c.Value}");
+        //    }
+        //    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        //}
 
-            ClaimsIdentity identity = new ClaimsIdentity(claims, "UserAuth");
-            _currentUser = new ClaimsPrincipal(identity);
 
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-        }
+        //public void LoginUser(string token)
+        //{
+        //    Console.WriteLine("############### LOGIN USER ###############");
+        //    List<Claim> claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.Name, token),
+        //        new Claim(ClaimTypes.Role, "User")
+        //    };
+
+        //    ClaimsIdentity identity = new ClaimsIdentity(claims, "UserAuth");
+        //    _currentUser = new ClaimsPrincipal(identity);
+
+        //    Console.WriteLine("LoginUser: Claims:");
+        //    foreach (Claim? c in _currentUser.Claims)
+        //    {
+        //        Console.WriteLine($"{c.Type} = {c.Value}");
+        //    }
+
+        //    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        //}
+
 
 
         public void Login(string username)

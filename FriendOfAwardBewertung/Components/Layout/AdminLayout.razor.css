@@ -1,0 +1,49 @@
+﻿.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: linear-gradient(180deg, #2c3e50, #34495e);
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* NAVIGATION */
+.nav-item {
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+}
+
+    .nav-item:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .nav-item.active {
+        background: #1abc9c;
+        color: #1f2d3d;
+        font-weight: bold;
+    }
+
+/* CONTENT */
+.content {
+    flex: 1;
+    padding: 40px;
+    background: #f4f6f8;
+}
