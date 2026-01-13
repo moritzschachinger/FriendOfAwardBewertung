@@ -1,4 +1,4 @@
-﻿<style >
+﻿
 .title {
     text-align: center;
     margin-top: 20px;
@@ -85,4 +85,85 @@
         background-color: #0d7ad8;
     }
 
-</style >
+
+
+
+/* Hintergrund sperren */
+.blurred {
+    pointer-events: none;
+    filter: blur(3px) brightness(0.8);
+}
+
+/* Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Modal */
+.confirm-modal {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 28px;
+    width: 420px;
+    max-width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    animation: scaleIn 0.2s ease-out;
+}
+
+    .confirm-modal h2 {
+        margin-top: 0;
+        text-align: center;
+    }
+
+.section {
+    margin-bottom: 16px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #ccc;
+    cursor: pointer;
+}
+
+.btn-confirm {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #0078d4;
+    color: white;
+    cursor: pointer;
+}
+
+    .btn-confirm:hover {
+        background: #005fa3;
+    }
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
