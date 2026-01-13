@@ -1,0 +1,51 @@
+﻿@using FriendOfAwardBewertung.Components.Layout
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using QRCoder;
+@inject TokenService Tokens
+@rendermode InteractiveServer
+@page "/admin/qrcode"
+
+
+<AuthorizeView>
+    <Authorized>
+        @layout AdminLayout
+        <div class="card">
+            <h1>QR-Code erzeugen</h1>
+
+            <button class="primary-btn" @onclick="GenerateQr">QR-Code erzeugen</button>
+            
+            <div class="qr-preview">
+                @if (qrBytes != null)
+                {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(qrBytes)" />
+                }
+            </div>
+        </div>
+      
+    </Authorized>
+    <NotAuthorized>
+        <h1 style="color:red">Not Authorized to enter this page</h1>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private byte[]? qrBytes;
+    QRCodeService qrcode = new QRCodeService();
+
+    private async Task GenerateQr()
+    {
+        string token = Tokens.GenerateToken();
+
+        string url = $"http://172.17.10.78:5432/userlogin?code={token}";
+
+        // Token in DB speichern
+        Tokens.SaveToken(token);
+
+
+        // QR-Bild erzeugen
+        qrBytes = qrcode.GenerateQRCodeImage(url);
+    }
+
+}

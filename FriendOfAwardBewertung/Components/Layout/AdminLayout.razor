@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+
+<div class="admin-layout">
+    <aside class="sidebar">
+
+        <div class="brand-card">
+            <span class="brand-icon">⚙️</span>
+            <span class="brand-text">Admin</span>
+        </div>
+
+        <nav class="nav">
+            <NavLink href="/admin" Match="NavLinkMatch.All" class="nav-item">
+                <span class="icon">📊</span>
+                <span class="text">Dashboard</span>
+            </NavLink>
+
+            <NavLink href="/admin/qrcode" class="nav-item">
+                <span class="icon">🔗</span>
+                <span class="text">QR-Codes</span>
+            </NavLink>
+
+            <NavLink href="/admin/import" class="nav-item">
+                <span class="icon">📥</span>
+                <span class="text">Excel Import</span>
+            </NavLink>
+
+            <NavLink href="/admin/export" class="nav-item">
+                <span class="icon">📤</span>
+                <span class="text">Excel Export</span>
+            </NavLink>
+        </nav>
+
+    </aside>
+
+    <main class="content">
+        @Body
+    </main>
+</div>

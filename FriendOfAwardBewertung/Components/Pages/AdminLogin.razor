@@ -1,39 +1,42 @@
 ﻿@page "/adminlogin"
 @using System.Data
+@using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveServer
 @inject MyCustomAuthStateProvider Auth
 @inject NavigationManager Nav
 
 <PageTitle>Admin Login</PageTitle>
 
-<div class="login-container">
-    <div class="login-box">
-        <h2>Admin Login</h2>
 
-        @if (!string.IsNullOrEmpty(error))
-        {
-            <div class="error-box">@error</div>
-        }
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Admin Login</h2>
 
-        <div class="input-group">
-            <label>Email</label>
-            <input @bind="email" type="text" />
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="error-box">@error</div>
+            }
+
+            <div class="input-group">
+                <label>Email</label>
+                <input @bind="email" type="text" />
+            </div>
+
+            <div class="input-group">
+                <label>Passwort</label>
+                <input @bind="password" type="password" />
+            </div>
+
+            <button class="login-button" @onclick="HandleLogin">
+                Login
+            </button>
+            <div class="forgot-password-wrapper">
+                <a href="/adminforgot">Passwort vergessen?</a>
+            </div>
+
         </div>
-
-        <div class="input-group">
-            <label>Passwort</label>
-            <input @bind="password" type="password" />
-        </div>
-
-        <button class="login-button" @onclick="HandleLogin">
-            Login
-        </button>
-        <div class="forgot-password-wrapper">
-            <a href="/adminforgot">Passwort vergessen?</a>
-        </div>
-
     </div>
-</div>
+  
 
 @code {
     private string email = "";

@@ -1,14 +1,12 @@
-﻿@rendermode InteractiveServer
+@rendermode InteractiveServer
 @page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
-<h1 class="title">Friends of Award</h1>
+@inject NavigationManager Nav
+@inject TokenService TokenService
+@inject MyCustomAuthStateProvider Auth
 
-<div class="subtitle">
-    Geben Sie uns Ihre persönlichen Favoriten bekannt!<br />
-    <strong>Einfacher Klick = Favorit (max. 5)</strong><br />
-    <strong>Doppelklick = Topfavorit (max. 1)</strong><br />
-    <span class="note">Diese Abstimmung ist anonym und auf ein Gerät beschränkt.</span>
-</div>
 
 <div class="page-wrapper @(showConfirm ? "blurred" : "")">
 

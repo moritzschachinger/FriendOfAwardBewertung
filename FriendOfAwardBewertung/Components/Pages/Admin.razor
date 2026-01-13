@@ -6,4 +6,39 @@
 
 @code {
 
+
+<AuthorizeView>
+    <Authorized>
+        @layout AdminLayout
+        <h2>Admin Bereich</h2>
+        <p>Willkommen im Admin Bereich. Wählen Sie eine Option aus dem Menü.</p>
+    </Authorized>
+    <NotAuthorized>
+        <h1 style="color:red">Nicht berechtigt, diese Seite zu betreten</h1>
+    </NotAuthorized>
+</AuthorizeView>
+     
+
+
+
+@code{
+
+    private string currentPage = "/admin";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await Auth.GetAuthenticationStateAsync();
+        var user = state.User;
+        Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
+        Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
+    }
+    void GoTo(string page)
+    {
+        currentPage = page;
+        Nav.NavigateTo(currentPage);
+
+    }
+
+   
+
 }
