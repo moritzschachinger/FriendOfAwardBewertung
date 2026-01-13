@@ -1,43 +1,41 @@
-﻿@using Microsoft.AspNetCore.Authorization
+﻿@using FriendOfAwardBewertung.Components.Layout
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using QRCoder;
+@using System.Security.Claims
 @inject TokenService Tokens
 @inject NavigationManager Nav
 @rendermode InteractiveServer
+@inject MyCustomAuthStateProvider Auth
 @page "/admin"
+
+
 
 <AuthorizeView>
     <Authorized>
-        <div class="admin-layout">
-
-            <!-- SIDEBAR -->
-            <aside class="sidebar">
-                <h2>Admin</h2>
-
-                <nav>
-                    <button @onclick="@(() => GoTo("/dashboard"))">Dashboard</button>
-                    <button @onclick="@(() => GoTo("/qrcode"))">QR-Codes</button>
-                    <button @onclick="@(() => GoTo("/import"))">Excel Import</button>
-                    <button @onclick="@(() => GoTo("/export"))">Excel Export</button>
-
-                </nav>
-
-               
-            </aside>
-
-           
-
-        </div>
+        @layout AdminLayout
+        <h2>Admin Bereich</h2>
+        <p>Willkommen im Admin Bereich. Wählen Sie eine Option aus dem Menü.</p>
     </Authorized>
     <NotAuthorized>
-        <h1 style="color:red">Not Authorized to enter this page</h1>
+        <h1 style="color:red">Nicht berechtigt, diese Seite zu betreten</h1>
     </NotAuthorized>
 </AuthorizeView>
+     
+
+
 
 @code{
 
     private string currentPage = "/admin";
 
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await Auth.GetAuthenticationStateAsync();
+        var user = state.User;
+        Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
+        Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
+    }
     void GoTo(string page)
     {
         currentPage = page;

@@ -1,0 +1,40 @@
+﻿.card {
+    background: white;
+    padding: 40px;
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.1);
+    max-width: 900px;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: white;
+    border: none;
+    padding: 14px 26px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .primary-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59,130,246,0.5);
+    }
+
+.qr-preview {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+    .qr-preview img {
+        width: 260px; /* 👈 HIER kleiner machen */
+        height: 260px;
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        background: white;
+        padding: 12px;
+    }
+

@@ -77,4 +77,8 @@ namespace FriendOfAwardBewertung
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
     }
+    
+    
+
+
 }
