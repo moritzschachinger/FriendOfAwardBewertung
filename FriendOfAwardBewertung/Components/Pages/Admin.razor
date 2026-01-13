@@ -1,14 +1,10 @@
-﻿@using FriendOfAwardBewertung.Components.Layout
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
-@using QRCoder;
-@using System.Security.Claims
-@inject TokenService Tokens
-@inject NavigationManager Nav
+﻿@page "/admin"
+@using System.Text
 @rendermode InteractiveServer
-@inject MyCustomAuthStateProvider Auth
-@page "/admin"
+<h3>Admin</h3>
 
+
+@code {
 
 
 <AuthorizeView>

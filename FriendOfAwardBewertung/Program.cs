@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 // Add this using directive at the top of the file
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 // SPAA: Service für Authorization
 builder.Services.AddCascadingAuthenticationState();

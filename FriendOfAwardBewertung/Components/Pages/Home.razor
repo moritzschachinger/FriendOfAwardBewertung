@@ -1,4 +1,4 @@
-﻿@rendermode InteractiveServer
+@rendermode InteractiveServer
 @page "/"
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
@@ -8,93 +8,156 @@
 @inject MyCustomAuthStateProvider Auth
 
 
-        <h1 class="title">Friends of Award</h1>
+<div class="page-wrapper @(showConfirm ? "blurred" : "")">
 
-        <div class="subtitle">
-            Geben Sie uns Ihre persönlichen Favoriten bekannt!<br />
-            <strong>Einfacher Klick = Favorit (max. 5)</strong><br />
-            <strong>Doppelklick = Topfavorit (max. 1)</strong><br />
-            <span class="note">Diese Abstimmung ist anonym und auf ein Gerät beschränkt.</span>
-        </div>
+    <div class="grid-container">
+        @foreach (var number in numbers)
+        {
+            <button class="grid-button @(GetButtonClass(number))"
+                    @onclick="@(() => OnClick(number))"
+                    @ondblclick="@(() => OnDoubleClick(number))">
+                <span>@number</span>
 
-        <div class="grid-container">
-            @foreach (int number in Numbers)
-            {
-                <button class="grid-button @(GetButtonClass(number))"
-                        @onclick="@(() => OnClick(number))"
-                        @ondblclick="@(() => OnDoubleClick(number))">
-                    <span>@number</span>
+                @if (topfavorit == number)
+                {
+                    <span class="star-group">⭐⭐</span>
+                }
+                else if (favorites.Contains(number))
+                {
+                    <span class="star-single">⭐</span>
+                }
+            </button>
+        }
+    </div>
 
-                    @if (Topfavorit == number)
+    <div class="info">
+        Offen: @remainingFavorites Favoriten, @remainingTopfavorit Topfavorit
+    </div>
+
+    <button class="submit-button" @onclick="Btn_BewertungAbsenden">
+        Bewertung absenden
+    </button>
+
+</div>
+
+@if (showConfirm)
+{
+    <div class="modal-overlay">
+        <div class="confirm-modal">
+
+            <h2>Bewertung bestätigen</h2>
+
+            <div class="section">
+                <strong>Favoriten (+1 Punkt):</strong>
+                <ul>
+                    @foreach (var f in favorites)
                     {
-                        <span class="star-group">⭐⭐</span>
+                        <li>Diplomarbeit ID @f</li>
                     }
-                    else if (Favorites.Contains(number))
-                    {
-                        <span class="star-single">⭐</span>
-                    }
+                </ul>
+            </div>
+
+            <div class="section">
+                <strong>Topfavorit (+2 Punkte):</strong>
+                <p>Diplomarbeit ID @topfavorit</p>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" @onclick="CancelConfirm">
+                    Abbrechen
                 </button>
-            }
+                <button class="btn-confirm" @onclick="ConfirmSubmit">
+                    Bestätigen
+                </button>
+            </div>
+
         </div>
-
-        <div class="info">
-            Offen: @RemainingFavorites Favoriten, @RemainingTopfavorit Topfavorit
-        </div>
-
-        <button class="submit-button">Bewertung absenden</button>
-
+    </div>
+}
 
 @code {
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.Delay(1000);
-        var state = await Auth.GetAuthenticationStateAsync();
-        var user = state.User;
-        Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
-        Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
-        
-    }
-    private List<int> Numbers = Enumerable.Range(1, 20).ToList();
+    private List<int> numbers = Enumerable.Range(1, 20).ToList();
+    private List<int> favorites = new();
+    private int? topfavorit = null;
+    private bool showConfirm = false;
 
-    private HashSet<int> Favorites = new();
-    private int? Topfavorit = null;
-
-    private int RemainingFavorites => 5 - Favorites.Count;
-    private int RemainingTopfavorit => Topfavorit == null ? 1 : 0;
+    private int remainingFavorites => 5 - favorites.Count;
+    private int remainingTopfavorit => topfavorit == null ? 1 : 0;
 
     private void OnClick(int number)
     {
-        // Falls es der Topfavorit ist → entfernen
-        if (Topfavorit == number)
+        if (topfavorit == number)
         {
-            Topfavorit = null;
+            topfavorit = null;
             return;
         }
 
-        // Favorit toggeln
-        if (Favorites.Contains(number))
+        if (favorites.Contains(number))
         {
-            Favorites.Remove(number);
+            favorites.Remove(number);
         }
-        else if (Favorites.Count < 5)
+        else if (favorites.Count < 5)
         {
-            Favorites.Add(number);
+            favorites.Add(number);
         }
     }
 
     private void OnDoubleClick(int number)
     {
-        // Doppelklick setzt neuen Topfavoriten
-        Topfavorit = number;
-
-        // Falls der schon Favorit war → entfernen
-        Favorites.Remove(number);
+        topfavorit = number;
+        favorites.Remove(number);
     }
 
     private string GetButtonClass(int number)
     {
-        if (Topfavorit == number) return "topfavorite";
-        if (Favorites.Contains(number)) return "favorite";
+        if (topfavorit == number) return "topfavorite";
+        if (favorites.Contains(number)) return "favorite";
         return "";
+    }
+
+    private void Btn_BewertungAbsenden()
+    {
+        showConfirm = true;
+    }
+
+    private async Task ConfirmSubmit()
+    {
+        showConfirm = false;
+
+        DbWrapperMySqlV2 wrapper = DbWrapperMySqlV2.Wrapper;
+
+        try
+        {
+            int numRecords;
+            foreach (int f in favorites)
+            {
+                string sql1 =
+                    $"UPDATE diplomarbeiten_punkte " +
+                    $"SET punkte = punkte + 1 " +
+                    $"WHERE diplomarbeit_id = {f};";
+
+                numRecords = wrapper.RunNonQuery(sql1);
+                if (numRecords != 1)
+                    Console.WriteLine($"DB-Error bei Favorit {f}");
+            }
+
+            string sql2 =
+                $"UPDATE diplomarbeiten_punkte " +
+                $"SET punkte = punkte + 2 " +
+                $"WHERE diplomarbeit_id = {topfavorit};";
+
+            numRecords = wrapper.RunNonQuery(sql2);
+            if (numRecords != 1)
+                Console.WriteLine($"DB-Error bei Topfavorit {topfavorit}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private void CancelConfirm()
+    {
+        showConfirm = false;
     }
 }
