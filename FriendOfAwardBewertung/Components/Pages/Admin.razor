@@ -1,10 +1,15 @@
 ﻿@page "/admin"
 @using System.Text
+@using System.Security.Claims
+@using FriendOfAwardBewertung.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider Auth
 @rendermode InteractiveServer
 <h3>Admin</h3>
 
 
-@code {
+
 
 
 <AuthorizeView>
