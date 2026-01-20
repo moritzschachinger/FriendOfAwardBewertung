@@ -205,3 +205,45 @@ body {
         width: 90%;
     }
 }
+
+
+.diploma-legend {
+    margin: 40px auto 0 auto;
+    max-width: 520px; /* ähnlich wie Grid */
+    text-align: left;
+}
+
+    .diploma-legend h3 {
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+.diploma-legend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.diploma-legend-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.diploma-number {
+    min-width: 32px;
+    text-align: center;
+    font-weight: 600;
+    margin-right: 10px;
+    color: #000;
+}
+
+.diploma-text {
+    color: #333;
+}
+

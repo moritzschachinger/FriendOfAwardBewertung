@@ -33,11 +33,11 @@
 
                         @if (topfavorit == number)
                         {
-                            <span class="star-group">‚≠ê‚≠ê</span>
+                            <span class="star-group">??</span>
                         }
                         else if (favorites.Contains(number))
                         {
-                            <span class="star-single">‚≠ê</span>
+                            <span class="star-single">?</span>
                         }
                     </button>
                 }
@@ -58,7 +58,7 @@
             <div class="modal-overlay">
                 <div class="confirm-modal">
 
-                    <h2>Bewertung best√§tigen</h2>
+                    <h2>Bewertung best‰tigen</h2>
 
                     <div class="section">
                         <strong>Favoriten (+1 Punkt):</strong>
@@ -80,7 +80,7 @@
                             Abbrechen
                         </button>
                         <button class="btn-confirm" @onclick="ConfirmSubmit">
-                            Best√§tigen
+                            Best‰tigen
                         </button>
                     </div>
 
@@ -96,9 +96,25 @@
 
 
 
+<div class="diploma-legend">
+    <h3>Diplomarbeiten ñ ‹bersicht</h3>
+
+    <div class="diploma-legend-list">
+        @foreach (var d in diplomarbeiten)
+        {
+            <div class="diploma-legend-item">
+                <span class="diploma-number">@d.Id</span>
+                <span class="diploma-text">@d.Name</span>
+            </div>
+        }
+    </div>
+</div>
+
+
 @code {
     private List<int> numbers = Enumerable.Range(1, 20).ToList();
     private List<int> favorites = new();
+    private List<Diplomarbeit> diplomarbeiten = new();
     private int? topfavorit = null;
     private bool showConfirm = false;
 
@@ -136,6 +152,12 @@
         Console.WriteLine("User erfolgreich authentifiziert");
 
         StateHasChanged(); // üî• wichtig f√ºr AuthorizeView
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        diplomarbeiten = await Diplomarbeit.LoadDiplomarbeitenAsync();
     }
 
 
@@ -216,3 +238,50 @@
         showConfirm = false;
     }
 }
+
+
+
+
+
+
+<style>
+    .diploma-legend {
+        margin: 40px auto 0 auto;
+        max-width: 520px;
+        text-align: left;
+    }
+
+        .diploma-legend h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+    .diploma-legend-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .diploma-legend-item {
+        display: flex;
+        align-items: center;
+        padding: 6px 10px;
+        background: #eaeaea;
+        border-radius: 10px;
+        font-size: 0.9rem;
+    }
+
+    .diploma-number {
+        min-width: 32px;
+        text-align: center;
+        font-weight: 600;
+        margin-right: 10px;
+    }
+
+    .diploma-text {
+        color: #333;
+    }
+</style>
+
