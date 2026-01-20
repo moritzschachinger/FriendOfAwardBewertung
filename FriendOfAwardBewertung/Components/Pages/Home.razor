@@ -2,84 +2,99 @@
 @page "/"
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using System.Collections.Specialized
 
 @inject NavigationManager Nav
 @inject TokenService TokenService
 @inject MyCustomAuthStateProvider Auth
 
-<h1 class="title">Friends of Award</h1>
-<div class="subtitle"> Geben Sie uns Ihre persönlichen Favoriten bekannt!<br /> 
-    <strong>Einfacher Klick = Favorit (max. 5)</strong><br />
-    <strong>Doppelklick = Topfavorit (max. 1)</strong><br /> 
-    <span class="note">Diese Abstimmung ist anonym und auf ein Gerät beschränkt.</span> 
-</div>
 
-<div class="page-wrapper @(showConfirm ? "blurred" : "")">
 
-    <div class="grid-container">
-        @foreach (var number in numbers)
-        {
-            <button class="grid-button @(GetButtonClass(number))"
-                    @onclick="@(() => OnClick(number))"
-                    @ondblclick="@(() => OnDoubleClick(number))">
-                <span>@number</span>
 
-                @if (topfavorit == number)
+<AuthorizeView>
+    <Authorized>
+        <h1 class="title">Friends of Award</h1>
+        <div class="subtitle">
+            Geben Sie uns Ihre persönlichen Favoriten bekannt!<br />
+            <strong>Einfacher Klick = Favorit (max. 5)</strong><br />
+            <strong>Doppelklick = Topfavorit (max. 1)</strong><br />
+            <span class="note">Diese Abstimmung ist anonym und auf ein Gerät beschränkt.</span>
+        </div>
+
+        <div class="page-wrapper @(showConfirm ? "blurred" : "")">
+
+            <div class="grid-container">
+                @foreach (var number in numbers)
                 {
-                    <span class="star-group">⭐⭐</span>
+                    <button class="grid-button @(GetButtonClass(number))"
+                            @onclick="@(() => OnClick(number))"
+                            @ondblclick="@(() => OnDoubleClick(number))">
+                        <span>@number</span>
+
+                        @if (topfavorit == number)
+                        {
+                            <span class="star-group">⭐⭐</span>
+                        }
+                        else if (favorites.Contains(number))
+                        {
+                            <span class="star-single">⭐</span>
+                        }
+                    </button>
                 }
-                else if (favorites.Contains(number))
-                {
-                    <span class="star-single">⭐</span>
-                }
+            </div>
+
+            <div class="info">
+                Offen: @remainingFavorites Favoriten, @remainingTopfavorit Topfavorit
+            </div>
+
+            <button class="submit-button" @onclick="Btn_BewertungAbsenden">
+                Bewertung absenden
             </button>
-        }
-    </div>
-
-    <div class="info">
-        Offen: @remainingFavorites Favoriten, @remainingTopfavorit Topfavorit
-    </div>
-
-    <button class="submit-button" @onclick="Btn_BewertungAbsenden">
-        Bewertung absenden
-    </button>
-
-</div>
-
-@if (showConfirm)
-{
-    <div class="modal-overlay">
-        <div class="confirm-modal">
-
-            <h2>Bewertung bestätigen</h2>
-
-            <div class="section">
-                <strong>Favoriten (+1 Punkt):</strong>
-                <ul>
-                    @foreach (var f in favorites)
-                    {
-                        <li>Diplomarbeit ID @f</li>
-                    }
-                </ul>
-            </div>
-
-            <div class="section">
-                <strong>Topfavorit (+2 Punkte):</strong>
-                <p>Diplomarbeit ID @topfavorit</p>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-cancel" @onclick="CancelConfirm">
-                    Abbrechen
-                </button>
-                <button class="btn-confirm" @onclick="ConfirmSubmit">
-                    Bestätigen
-                </button>
-            </div>
 
         </div>
-    </div>
-}
+
+        @if (showConfirm)
+        {
+            <div class="modal-overlay">
+                <div class="confirm-modal">
+
+                    <h2>Bewertung bestätigen</h2>
+
+                    <div class="section">
+                        <strong>Favoriten (+1 Punkt):</strong>
+                        <ul>
+                            @foreach (var f in favorites)
+                            {
+                                <li>Diplomarbeit ID @f</li>
+                            }
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <strong>Topfavorit (+2 Punkte):</strong>
+                        <p>Diplomarbeit ID @topfavorit</p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn-cancel" @onclick="CancelConfirm">
+                            Abbrechen
+                        </button>
+                        <button class="btn-confirm" @onclick="ConfirmSubmit">
+                            Bestätigen
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1 style="color:red">Nicht berechtigt, diese Seite zu betreten</h1>
+    </NotAuthorized>
+</AuthorizeView>
+        
+
+
 
 @code {
     private List<int> numbers = Enumerable.Range(1, 20).ToList();
@@ -89,6 +104,40 @@
 
     private int remainingFavorites => 5 - favorites.Count;
     private int remainingTopfavorit => topfavorit == null ? 1 : 0;
+
+    private bool _authDone = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || _authDone)
+            return;
+
+        _authDone = true;
+
+        Uri uri = Nav.ToAbsoluteUri(Nav.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        string token = query["code"];
+
+        if (string.IsNullOrWhiteSpace(token))
+            return;
+
+        if (!TokenService.ValidateToken(token))
+        {
+            Console.WriteLine("Token ungültig");
+            return;
+        }
+
+        // ✅ LOGIN
+        Auth.Login(token);
+
+        // ✅ TOKEN EINMALIG VERBRAUCHEN
+        TokenService.MarkTokenAsUsed(token);
+
+        Console.WriteLine("User erfolgreich authentifiziert");
+
+        StateHasChanged(); // 🔥 wichtig für AuthorizeView
+    }
+
 
     private void OnClick(int number)
     {
