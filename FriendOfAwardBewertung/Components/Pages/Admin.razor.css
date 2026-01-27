@@ -1,0 +1,132 @@
+﻿.dashboard {
+    padding: 32px 40px 80px;
+    background: #f8fafc;
+    font-family: Inter, system-ui, sans-serif;
+}
+
+/* HEADER */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.status {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* STATS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 36px;
+}
+
+.stat-card {
+    background: white;
+    padding: 18px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+    .stat-card .label {
+        font-size: .85rem;
+        color: #64748b;
+    }
+
+    .stat-card .value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-top: 6px;
+    }
+
+.time-card {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    color: white;
+}
+
+    .time-card .label {
+        color: #e0e7ff;
+    }
+
+    .time-card .time {
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+.small-btn {
+    margin-top: 10px;
+    background: rgba(255,255,255,.2);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.08);
+}
+
+/* TABLE */
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .ranking-table th,
+    .ranking-table td {
+        padding: 12px;
+        text-align: left;
+    }
+
+    .ranking-table thead {
+        background: #f1f5f9;
+    }
+
+.top6 {
+    background: #ecfeff;
+    font-weight: 700;
+}
+
+.mid {
+    background: #f0fdf4;
+}
+
+.low {
+    background: #fff7ed;
+}
+
+/* ACTIONS */
+.actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+button {
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    button.danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    button.export {
+        background: #0ea5e9;
+        color: white;
+    }
