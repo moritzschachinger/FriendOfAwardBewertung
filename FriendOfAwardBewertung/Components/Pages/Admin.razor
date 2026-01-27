@@ -1,34 +1,258 @@
 ﻿@page "/admin"
-@using System.Text
-@using System.Security.Claims
 @using FriendOfAwardBewertung.Components.Layout
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@layout AdminLayout
+@rendermode InteractiveServer
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider Auth
-@rendermode InteractiveServer
-<h3>Admin</h3>
 
 
-
-
-
+<h1>📊 Admin Dashboard</h1>
 <AuthorizeView>
     <Authorized>
-        @layout AdminLayout
-        <h2>Admin Bereich</h2>
-        <p>Willkommen im Admin Bereich. Wählen Sie eine Option aus dem Menü.</p>
+
+
+
+        <div class="dashboard">
+
+            <!-- HEADER -->
+            <div class="dashboard-header">
+                <h1>Publikumsvoting – Übersicht</h1>
+                <span class="status running">🟢 Voting läuft</span>
+            </div>
+
+            <!-- INFO BOXEN -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="label">Diplomarbeiten</span>
+                    <span class="value">20</span>
+                </div>
+
+                <div class="stat-card">
+                    <span class="label">Abgegebene Stimmen</span>
+                    <span class="value">124</span>
+                </div>
+
+                <div class="stat-card">
+                    <span class="label">Max. Publikumspunkte</span>
+                    <span class="value">30</span>
+                </div>
+
+                <div class="stat-card time-card">
+                    <span class="label">Voting endet um</span>
+                    <span class="time">18:30</span>
+                    <button class="small-btn">Zeit ändern</button>
+                </div>
+            </div>
+
+            <!-- TABELLE -->
+            <div class="card">
+                <h2>Gesamtreihung (20 Diplomarbeiten)</h2>
+
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Platz</th>
+                            <th>Diplomarbeit</th>
+                            <th>Schule</th>
+                            <th>Publikum</th>
+                            <th>Gesamt</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <!-- TOP 6 -->
+                        <tr class="top6">
+                            <td>1</td>
+                            <td>Projekt Alpha</td>
+                            <td>38</td>
+                            <td>30</td>
+                            <td>68</td>
+                            <td>🏆 Finalist</td>
+                        </tr>
+                        <tr class="top6">
+                            <td>2</td>
+                            <td>Projekt Beta</td>
+                            <td>35</td>
+                            <td>26</td>
+                            <td>61</td>
+                            <td>🏆 Finalist</td>
+                        </tr>
+                        <tr class="top6">
+                            <td>3</td>
+                            <td>Projekt Gamma</td>
+                            <td>34</td>
+                            <td>24</td>
+                            <td>58</td>
+                            <td>🏆 Finalist</td>
+                        </tr>
+                        <tr class="top6">
+                            <td>4</td>
+                            <td>Projekt Delta</td>
+                            <td>33</td>
+                            <td>22</td>
+                            <td>55</td>
+                            <td>🏆 Finalist</td>
+                        </tr>
+                        <tr class="top6">
+                            <td>5</td>
+                            <td>Projekt Epsilon</td>
+                            <td>32</td>
+                            <td>21</td>
+                            <td>53</td>
+                            <td>🏆 Finalist</td>
+                        </tr>
+                        <tr class="top6">
+                            <td>6</td>
+                            <td>Projekt Zeta</td>
+                            <td>31</td>
+                            <td>20</td>
+                            <td>51</td>
+                            <td>🏆 Finalist</td>
+                        </tr>
+
+                        <!-- 7–13 -->
+                        <tr class="mid">
+                            <td>7</td>
+                            <td>Projekt Eta</td>
+                            <td>30</td>
+                            <td>18</td>
+                            <td>48</td>
+                            <td>💰 100 €</td>
+                        </tr>
+                        <tr class="mid">
+                            <td>8</td>
+                            <td>Projekt Theta</td>
+                            <td>29</td>
+                            <td>17</td>
+                            <td>46</td>
+                            <td>💰 100 €</td>
+                        </tr>
+                        <tr class="mid">
+                            <td>9</td>
+                            <td>Projekt Iota</td>
+                            <td>28</td>
+                            <td>16</td>
+                            <td>44</td>
+                            <td>💰 100 €</td>
+                        </tr>
+                        <tr class="mid">
+                            <td>10</td>
+                            <td>Projekt Kappa</td>
+                            <td>27</td>
+                            <td>15</td>
+                            <td>42</td>
+                            <td>💰 100 €</td>
+                        </tr>
+                        <tr class="mid">
+                            <td>11</td>
+                            <td>Projekt Lambda</td>
+                            <td>26</td>
+                            <td>14</td>
+                            <td>40</td>
+                            <td>💰 100 €</td>
+                        </tr>
+                        <tr class="mid">
+                            <td>12</td>
+                            <td>Projekt Mu</td>
+                            <td>25</td>
+                            <td>13</td>
+                            <td>38</td>
+                            <td>💰 100 €</td>
+                        </tr>
+                        <tr class="mid">
+                            <td>13</td>
+                            <td>Projekt Nu</td>
+                            <td>24</td>
+                            <td>12</td>
+                            <td>36</td>
+                            <td>💰 100 €</td>
+                        </tr>
+
+                        <!-- 14–20 -->
+                        <tr class="low">
+                            <td>14</td>
+                            <td>Projekt Xi</td>
+                            <td>23</td>
+                            <td>11</td>
+                            <td>34</td>
+                            <td>🎁 50 €</td>
+                        </tr>
+                        <tr class="low">
+                            <td>15</td>
+                            <td>Projekt Omikron</td>
+                            <td>22</td>
+                            <td>10</td>
+                            <td>32</td>
+                            <td>🎁 50 €</td>
+                        </tr>
+                        <tr class="low">
+                            <td>16</td>
+                            <td>Projekt Pi</td>
+                            <td>21</td>
+                            <td>9</td>
+                            <td>30</td>
+                            <td>🎁 50 €</td>
+                        </tr>
+                        <tr class="low">
+                            <td>17</td>
+                            <td>Projekt Rho</td>
+                            <td>20</td>
+                            <td>8</td>
+                            <td>28</td>
+                            <td>🎁 50 €</td>
+                        </tr>
+                        <tr class="low">
+                            <td>18</td>
+                            <td>Projekt Sigma</td>
+                            <td>19</td>
+                            <td>7</td>
+                            <td>26</td>
+                            <td>🎁 50 €</td>
+                        </tr>
+                        <tr class="low">
+                            <td>19</td>
+                            <td>Projekt Tau</td>
+                            <td>18</td>
+                            <td>6</td>
+                            <td>24</td>
+                            <td>🎁 50 €</td>
+                        </tr>
+                        <tr class="low">
+                            <td>20</td>
+                            <td>Projekt Omega</td>
+                            <td>17</td>
+                            <td>5</td>
+                            <td>22</td>
+                            <td>🎁 50 €</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="actions">
+                <button class="danger">Publikumsvoting jetzt beenden</button>
+                <button class="export">Gesamtauswertung exportieren</button>
+            </div>
+
+        </div>
+
+
     </Authorized>
     <NotAuthorized>
-        <h1 style="color:red">Nicht berechtigt, diese Seite zu betreten</h1>
+        <p style="color:red">Sie sind nicht berechtigt, auf diese Seite zuzugreifen. Bitte <a href="/adminlogin">loggen Sie sich ein</a>.</p>
     </NotAuthorized>
 </AuthorizeView>
-     
-
 
 
 @code{
 
     private string currentPage = "/admin";
+    DbWrapperMySqlV2 dbWrapper = DbWrapperMySqlV2.Wrapper;
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,6 +260,8 @@
         var user = state.User;
         Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
         Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
+        
+
     }
     void GoTo(string page)
     {
@@ -43,6 +269,7 @@
         Nav.NavigateTo(currentPage);
 
     }
+    
 
    
 

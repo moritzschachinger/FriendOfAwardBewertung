@@ -24,7 +24,7 @@
 
             <div class="input-group">
                 <label>Passwort</label>
-                <input @bind="password" type="password" />
+                <input @bind="password" @onkeydown="Enter" type="password" />
             </div>
 
             <button class="login-button" @onclick="HandleLogin">
@@ -43,6 +43,22 @@
     private string password = "";
     private string error = "";
 
+    
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            if (HandleLogin(email, password))
+            {
+                Auth.Login(email);
+                Nav.NavigateTo("/admin");
+            }
+            else
+            {
+                error = "Falscher Benutzername oder Passwort.";
+            }
+        }
+    }
     private void HandleLogin()
     {
         // Beispiel

@@ -43,9 +43,12 @@
 /* ===== CONTENT ===== */
 .content {
     flex: 1;
-    padding: 50px;
+    padding: 40px;
     background: #f8fafc;
+    overflow-y: auto; /* ✅ HIER kommt der Scroll */
+    max-height: 100vh; /* Content scrollt, Sidebar bleibt fix */
 }
+
 
 /* ===== SIDEBAR ===== */
 .sidebar {
@@ -80,8 +83,9 @@
 
 .admin-layout {
     display: flex;
-    height: 100vh; /* 🔥 WICHTIG */
-    width: 100vw;
-    overflow: hidden;
+    min-height: 100vh; /* ✅ statt height */
+    width: 100%;
+    overflow: hidden; /* Sidebar darf fix bleiben */
 }
+
 
