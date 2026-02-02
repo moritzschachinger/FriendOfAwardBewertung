@@ -142,7 +142,7 @@
 
         if (!TokenService.ValidateToken(token))
         {
-            Console.WriteLine("Token ungÃ¼ltig");
+            Console.WriteLine("Token ungültig");
             return;
         }
 
@@ -154,7 +154,7 @@
 
         Console.WriteLine("User erfolgreich authentifiziert");
 
-        StateHasChanged(); // ðŸ”¥ wichtig fÃ¼r AuthorizeView
+        StateHasChanged(); // ðŸ”¥ wichtig für AuthorizeView
     }
 
 

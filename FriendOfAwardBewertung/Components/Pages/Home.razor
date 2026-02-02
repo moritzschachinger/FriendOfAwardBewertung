@@ -1,5 +1,5 @@
-@rendermode InteractiveServer
 @page "/"
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using System.Collections.Specialized
@@ -18,7 +18,7 @@
             Geben Sie uns Ihre persönlichen Favoriten bekannt!<br />
             <strong>Einfacher Klick = Favorit (max. 5)</strong><br />
             <strong>Doppelklick = Topfavorit (max. 1)</strong><br />
-            <span class="note">Diese Abstimmung ist anonym und auf ein Gerät beschränkt.</span>
+            <span class="note">Diese Abstimmung ist anonym und auf ein GerÃ¤t beschrÃ¤nkt.</span>
         </div>
 
         <div class="page-wrapper @(showConfirm ? "blurred" : "")">
@@ -58,7 +58,7 @@
             <div class="modal-overlay">
                 <div class="confirm-modal">
 
-                    <h2>Bewertung best�tigen</h2>
+                    <h2>Bewertung bestätigen</h2>
 
                     <div class="section">
                         <strong>Favoriten (+1 Punkt):</strong>
@@ -80,12 +80,25 @@
                             Abbrechen
                         </button>
                         <button class="btn-confirm" @onclick="ConfirmSubmit">
-                            Best�tigen
+                            Bestätigen
                         </button>
                     </div>
 
                 </div>
             </div>
+        <div class="diploma-legend">
+            <h3>Diplomarbeiten – Übersicht</h3>
+
+            <div class="diploma-legend-list">
+                @foreach (var d in diplomarbeiten)
+                {
+                    <div class="diploma-legend-item">
+                        <span class="diploma-number">@d.Id</span>
+                        <span class="diploma-text">@d.Name</span>
+                    </div>
+                }
+            </div>
+        </div>
         }
     </Authorized>
     <NotAuthorized>
@@ -96,19 +109,6 @@
 
 
 
-<div class="diploma-legend">
-    <h3>Diplomarbeiten � �bersicht</h3>
-
-    <div class="diploma-legend-list">
-        @foreach (var d in diplomarbeiten)
-        {
-            <div class="diploma-legend-item">
-                <span class="diploma-number">@d.Id</span>
-                <span class="diploma-text">@d.Name</span>
-            </div>
-        }
-    </div>
-</div>
 
 
 @code {
@@ -143,15 +143,15 @@
             return;
         }
 
-        // ✅ LOGIN
+        // LOGIN
         Auth.Login(token);
 
-        // ✅ TOKEN EINMALIG VERBRAUCHEN
+        // TOKEN EINMALIG VERBRAUCHEN
         TokenService.MarkTokenAsUsed(token);
 
         Console.WriteLine("User erfolgreich authentifiziert");
 
-        StateHasChanged(); // 🔥 wichtig für AuthorizeView
+        StateHasChanged(); // wichtig für AuthorizeView
     }
 
 
