@@ -62,173 +62,34 @@
                         </tr>
                     </thead>
                     <tbody>
-
+                        @foreach(Diplomarbeit d in diplomarbeiten)
+                        {
+                            @if(d.Id <= 6)
+                            {
+                                style = "top6";
+                                preisgeld = "🏆 Finalist";
+                            }
+                            else if(d.Id>=7 && d.Id <= 13)
+                            {
+                                style = "mid";
+                                preisgeld = "💰 100 €";
+                            }
+                            else
+                            {
+                                style = "low";
+                                preisgeld = "🎁 50 €";
+                            }
+                            <tr class="@style">
+                                <td>@d.Id</td>
+                                <td>@d.Name</td>
+                                <td>38</td>
+                                <td>30</td>
+                                <td>68</td>
+                                <td>@preisgeld</td>
+                            </tr>
+                        }
                         <!-- TOP 6 -->
-                        <tr class="top6">
-                            <td>1</td>
-                            <td>Projekt Alpha</td>
-                            <td>38</td>
-                            <td>30</td>
-                            <td>68</td>
-                            <td>🏆 Finalist</td>
-                        </tr>
-                        <tr class="top6">
-                            <td>2</td>
-                            <td>Projekt Beta</td>
-                            <td>35</td>
-                            <td>26</td>
-                            <td>61</td>
-                            <td>🏆 Finalist</td>
-                        </tr>
-                        <tr class="top6">
-                            <td>3</td>
-                            <td>Projekt Gamma</td>
-                            <td>34</td>
-                            <td>24</td>
-                            <td>58</td>
-                            <td>🏆 Finalist</td>
-                        </tr>
-                        <tr class="top6">
-                            <td>4</td>
-                            <td>Projekt Delta</td>
-                            <td>33</td>
-                            <td>22</td>
-                            <td>55</td>
-                            <td>🏆 Finalist</td>
-                        </tr>
-                        <tr class="top6">
-                            <td>5</td>
-                            <td>Projekt Epsilon</td>
-                            <td>32</td>
-                            <td>21</td>
-                            <td>53</td>
-                            <td>🏆 Finalist</td>
-                        </tr>
-                        <tr class="top6">
-                            <td>6</td>
-                            <td>Projekt Zeta</td>
-                            <td>31</td>
-                            <td>20</td>
-                            <td>51</td>
-                            <td>🏆 Finalist</td>
-                        </tr>
-
-                        <!-- 7–13 -->
-                        <tr class="mid">
-                            <td>7</td>
-                            <td>Projekt Eta</td>
-                            <td>30</td>
-                            <td>18</td>
-                            <td>48</td>
-                            <td>💰 100 €</td>
-                        </tr>
-                        <tr class="mid">
-                            <td>8</td>
-                            <td>Projekt Theta</td>
-                            <td>29</td>
-                            <td>17</td>
-                            <td>46</td>
-                            <td>💰 100 €</td>
-                        </tr>
-                        <tr class="mid">
-                            <td>9</td>
-                            <td>Projekt Iota</td>
-                            <td>28</td>
-                            <td>16</td>
-                            <td>44</td>
-                            <td>💰 100 €</td>
-                        </tr>
-                        <tr class="mid">
-                            <td>10</td>
-                            <td>Projekt Kappa</td>
-                            <td>27</td>
-                            <td>15</td>
-                            <td>42</td>
-                            <td>💰 100 €</td>
-                        </tr>
-                        <tr class="mid">
-                            <td>11</td>
-                            <td>Projekt Lambda</td>
-                            <td>26</td>
-                            <td>14</td>
-                            <td>40</td>
-                            <td>💰 100 €</td>
-                        </tr>
-                        <tr class="mid">
-                            <td>12</td>
-                            <td>Projekt Mu</td>
-                            <td>25</td>
-                            <td>13</td>
-                            <td>38</td>
-                            <td>💰 100 €</td>
-                        </tr>
-                        <tr class="mid">
-                            <td>13</td>
-                            <td>Projekt Nu</td>
-                            <td>24</td>
-                            <td>12</td>
-                            <td>36</td>
-                            <td>💰 100 €</td>
-                        </tr>
-
-                        <!-- 14–20 -->
-                        <tr class="low">
-                            <td>14</td>
-                            <td>Projekt Xi</td>
-                            <td>23</td>
-                            <td>11</td>
-                            <td>34</td>
-                            <td>🎁 50 €</td>
-                        </tr>
-                        <tr class="low">
-                            <td>15</td>
-                            <td>Projekt Omikron</td>
-                            <td>22</td>
-                            <td>10</td>
-                            <td>32</td>
-                            <td>🎁 50 €</td>
-                        </tr>
-                        <tr class="low">
-                            <td>16</td>
-                            <td>Projekt Pi</td>
-                            <td>21</td>
-                            <td>9</td>
-                            <td>30</td>
-                            <td>🎁 50 €</td>
-                        </tr>
-                        <tr class="low">
-                            <td>17</td>
-                            <td>Projekt Rho</td>
-                            <td>20</td>
-                            <td>8</td>
-                            <td>28</td>
-                            <td>🎁 50 €</td>
-                        </tr>
-                        <tr class="low">
-                            <td>18</td>
-                            <td>Projekt Sigma</td>
-                            <td>19</td>
-                            <td>7</td>
-                            <td>26</td>
-                            <td>🎁 50 €</td>
-                        </tr>
-                        <tr class="low">
-                            <td>19</td>
-                            <td>Projekt Tau</td>
-                            <td>18</td>
-                            <td>6</td>
-                            <td>24</td>
-                            <td>🎁 50 €</td>
-                        </tr>
-                        <tr class="low">
-                            <td>20</td>
-                            <td>Projekt Omega</td>
-                            <td>17</td>
-                            <td>5</td>
-                            <td>22</td>
-                            <td>🎁 50 €</td>
-                        </tr>
-
+                        
                     </tbody>
                 </table>
             </div>
@@ -253,6 +114,9 @@
 
     private string currentPage = "/admin";
     DbWrapperMySqlV2 dbWrapper = DbWrapperMySqlV2.Wrapper;
+    List<Diplomarbeit> diplomarbeiten = [];
+    string style = "";
+    string preisgeld = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -260,12 +124,12 @@
         var user = state.User;
         Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
         Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
-
+        await LoadDataAsync();
 
     }
-    void LoadDataAsync()
+    async Task LoadDataAsync()
     {
-        
+        diplomarbeiten = await Diplomarbeit.LoadDiplomarbeitenAsync();
 
     }
     void GoTo(string page)

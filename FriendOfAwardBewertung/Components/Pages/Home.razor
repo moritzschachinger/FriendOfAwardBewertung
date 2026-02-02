@@ -87,6 +87,19 @@
                 </div>
             </div>
         }
+        <div class="diploma-legend">
+            <h3>Diplomarbeiten – Übersicht</h3>
+
+            <div class="diploma-legend-list">
+                @foreach (var d in diplomarbeiten)
+                {
+                    <div class="diploma-legend-item">
+                        <span class="diploma-number">@d.Id</span>
+                        <span class="diploma-text">@d.Name</span>
+                    </div>
+                }
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <h1 style="color:red">Nicht berechtigt, diese Seite zu betreten</h1>
@@ -96,19 +109,7 @@
 
 
 
-<div class="diploma-legend">
-    <h3>Diplomarbeiten – Übersicht</h3>
 
-    <div class="diploma-legend-list">
-        @foreach (var d in diplomarbeiten)
-        {
-            <div class="diploma-legend-item">
-                <span class="diploma-number">@d.Id</span>
-                <span class="diploma-text">@d.Name</span>
-            </div>
-        }
-    </div>
-</div>
 
 
 @code {
