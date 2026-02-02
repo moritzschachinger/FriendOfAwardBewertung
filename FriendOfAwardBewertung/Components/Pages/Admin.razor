@@ -260,6 +260,11 @@
         var user = state.User;
         Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
         Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
+
+
+    }
+    void LoadDataAsync()
+    {
         
 
     }
@@ -269,8 +274,5 @@
         Nav.NavigateTo(currentPage);
 
     }
-    
-
    
-
 }
