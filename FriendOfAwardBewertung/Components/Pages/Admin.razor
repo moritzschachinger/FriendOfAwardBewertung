@@ -2,17 +2,15 @@
 @using FriendOfAwardBewertung.Components.Layout
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using ClosedXML.Excel
 @layout AdminLayout
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider Auth
 
-
 <h1>📊 Admin Dashboard</h1>
 <AuthorizeView>
     <Authorized>
-
-
 
         <div class="dashboard">
 
@@ -46,6 +44,24 @@
                 </div>
             </div>
 
+            <!-- EXCEL IMPORT -->
+            <div class="excel-import">
+                <InputFile OnChange="HandleExcelUpload" accept=".xlsx" />
+                <button class="btn btn-primary" @onclick="ImportExcel">
+                    Excel importieren
+                </button>
+
+                @if (!string.IsNullOrEmpty(importError))
+                {
+                    <p style="color:red">@importError</p>
+                }
+
+                @if (excelLoaded)
+                {
+                    <p style="color:green">✔ @loadedCount Datensätze geladen</p>
+                }
+            </div>
+
             <!-- TABELLE -->
             <div class="card">
                 <h2>Gesamtreihung (20 Diplomarbeiten)</h2>
@@ -63,7 +79,7 @@
                     </thead>
                     <tbody>
 
-                        <!-- TOP 6 -->
+                        <!-- Beispiel-Daten -->
                         <tr class="top6">
                             <td>1</td>
                             <td>Projekt Alpha</td>
@@ -241,15 +257,17 @@
 
         </div>
 
-
     </Authorized>
     <NotAuthorized>
         <p style="color:red">Sie sind nicht berechtigt, auf diese Seite zuzugreifen. Bitte <a href="/adminlogin">loggen Sie sich ein</a>.</p>
     </NotAuthorized>
 </AuthorizeView>
 
-
-@code{
+@code {
+    bool excelLoaded = false;
+    string? importError;
+    IBrowserFile? uploadedFile;
+    int loadedCount = 0; // Anzahl der importierten Datensätze
 
     private string currentPage = "/admin";
     DbWrapperMySqlV2 dbWrapper = DbWrapperMySqlV2.Wrapper;
@@ -260,19 +278,87 @@
         var user = state.User;
         Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
         Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
-
-
     }
-    void LoadDataAsync()
-    {
-        
 
-    }
     void GoTo(string page)
     {
         currentPage = page;
         Nav.NavigateTo(currentPage);
-
     }
-   
+
+    void HandleExcelUpload(InputFileChangeEventArgs e)
+    {
+        uploadedFile = e.File;
+        excelLoaded = false;
+        importError = null;
+        loadedCount = 0;
+    }
+
+    async Task ImportExcel()
+    {
+        try
+        {
+            if (uploadedFile == null)
+            {
+                importError = "Keine Datei ausgewählt.";
+                return;
+            }
+
+            // Alte Daten löschen
+            dbWrapper.RunNonQuery("DELETE FROM diplomarbeiten");
+
+            using var browserStream = uploadedFile.OpenReadStream(5_000_000);
+            using var ms = new MemoryStream();
+            await browserStream.CopyToAsync(ms);
+            ms.Position = 0;
+
+            using var workbook = new XLWorkbook(ms);
+            var sheet = workbook.Worksheet(1);
+
+            var rows = sheet.RowsUsed().Skip(1).ToList();
+
+            if (rows.Count != 20)
+            {
+                importError = "Die Excel-Datei muss GENAU 20 Einträge enthalten.";
+                return;
+            }
+
+            loadedCount = 0;
+
+            foreach (var row in rows)
+            {
+                var laufendeNummer = row.Cell(1).GetValue<int>();
+                var titel = row.Cell(2).GetString().Replace("'", "''");
+                var schueler = row.Cell(3).GetString().Replace("'", "''");
+                var punkte = row.Cell(4).GetValue<int>();
+
+                if (laufendeNummer < 1 || laufendeNummer > 20)
+                    throw new Exception("Ungültige laufende Nummer");
+
+                string sql = $"INSERT INTO diplomarbeiten (id, Diplomarbeit, namenSchüler, punkteSchulvoting) " +
+                             $"VALUES ({laufendeNummer}, '{titel}', '{schueler}', {punkte})";
+
+                try
+                {
+                    dbWrapper.RunNonQuery(sql);
+                    loadedCount++;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Fehler beim Speichern in DB: " + ex.Message);
+                    importError = "Fehler beim Speichern in der Datenbank.";
+                    return;
+                }
+            }
+
+            excelLoaded = true;
+            importError = null;
+            Console.WriteLine($"Excel erfolgreich gelesen und {loadedCount} Datensätze in DB gespeichert.");
+        }
+        catch (Exception ex)
+        {
+            importError = "Excel-Import fehlgeschlagen: " + ex.Message;
+        }
+    }
+
 }
