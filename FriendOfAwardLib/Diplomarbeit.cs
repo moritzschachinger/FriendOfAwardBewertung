@@ -5,7 +5,7 @@ public class Diplomarbeit
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public int PunkteSchulvoting { get; private set; }
-    public int PunktePublikumsvoting { get; private set; }
+    public int PunktePublikumsvoting { get; set; }
 
     public Diplomarbeit(int id, string name, int punkteSchulvoting, int punktePublikumsvoting)
     {

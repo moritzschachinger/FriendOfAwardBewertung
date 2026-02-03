@@ -117,6 +117,7 @@
     string style = "";
     string preisgeld = "";
     int count = 1;
+    double max = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -145,8 +146,23 @@
     }
     void btn_ZeitAendern()
     {
-        
+
     }
+    void CalculateLinearPoints(List<Diplomarbeit> diplomarbeiten)
+    {
+        int max = diplomarbeiten.Max(d => d.PunktePublikumsvoting);
+
+        foreach (Diplomarbeit d in diplomarbeiten)
+        {
+            int roh = d.PunktePublikumsvoting;
+
+            d.PunktePublikumsvoting =
+                max == 0
+                    ? 0
+                    : (int)Math.Round((roh / (double)max) * 30);
+        }
+    }
+
     void GoTo(string page)
     {
         currentPage = page;
