@@ -1,51 +1,60 @@
 ﻿@page "/admin"
-@using FriendOfAwardBewertung.Components.Layout
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
 @layout AdminLayout
 @rendermode InteractiveServer
-@inject NavigationManager Nav
-@inject AuthenticationStateProvider Auth
 
+@using FriendOfAwardBewertung.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
 
 <h1>📊 Admin Dashboard</h1>
+
 <AuthorizeView>
     <Authorized>
+
         <div class="dashboard">
 
             <!-- HEADER -->
             <div class="dashboard-header">
-                <h1>Publikumsvoting – Übersicht</h1>
-                <span class="status running">🟢 Voting läuft</span>
+                <h2>Publikumsvoting – Übersicht</h2>
+
+                @if (VotingLaeuft)
+                {
+                    <span class="status running">🟢 Voting läuft</span>
+                }
+                else
+                {
+                    <span class="status stopped">🔴 Voting beendet</span>
+                }
             </div>
 
-            <!-- INFO BOXEN -->
+            <!-- STATS -->
             <div class="stats-grid">
+
                 <div class="stat-card">
-                    <span class="label">Diplomarbeiten</span>
-                    <span class="value">20</span>
+                    <span>Diplomarbeiten</span>
+                    <strong>20</strong>
                 </div>
 
                 <div class="stat-card">
-                    <span class="label">Abgegebene Stimmen</span>
-                    <span class="value">124</span>
-                </div>
-
-                <div class="stat-card">
-                    <span class="label">Max. Publikumspunkte</span>
-                    <span class="value">30</span>
+                    <span>Max. Publikumspunkte</span>
+                    <strong>30</strong>
                 </div>
 
                 <div class="stat-card time-card">
-                    <span class="label">Voting endet um</span>
-                    <span class="time">18:30</span>
-                    <button class="small-btn" @onclick="btn_ZeitAendern">Zeit ändern</button>
+                    <span>Voting endet um</span>
+
+                    <input type="datetime-local"
+                           @bind="VotingEndInput"
+                            />
+
+                    <button class="small-btn" @onclick="SaveVotingTime">
+                        💾 Speichern
+                    </button>
                 </div>
             </div>
 
             <!-- TABELLE -->
             <div class="card">
-                <h2>Gesamtreihung (20 Diplomarbeiten)</h2>
+                <h3>Gesamtreihung</h3>
 
                 <table class="ranking-table">
                     <thead>
@@ -55,104 +64,132 @@
                             <th>Schule</th>
                             <th>Publikum</th>
                             <th>Gesamt</th>
-                            <th>Status</th>
+                            <th>Preis</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        @foreach(Diplomarbeit d in diplomarbeiten.OrderByDescending(d => (d.PunkteSchulvoting + d.PunktePublikumsvoting)))
+                        @{
+                            count = 1;
+                        }
+
+                        @foreach (var d in AnzeigeListe)
                         {
-                            
-                            @if(count <= 6)
+                            string klasse;
+                            string preis;
+
+                            if (count <= 6)
                             {
-                                style = "top6";
-                                preisgeld = "🏆 Finalist";
+                                klasse = "top6";
+                                preis = "🏆 Finalist";
                             }
-                            else if(count>=7 && d.Id <= 13)
+                            else if (count <= 13)
                             {
-                                style = "mid";
-                                preisgeld = "💰 100 €";
+                                klasse = "mid";
+                                preis = "💰 100 €";
                             }
                             else
                             {
-                                style = "low";
-                                preisgeld = "🎁 50 €";
+                                klasse = "low";
+                                preis = "🎁 50 €";
                             }
-                            <tr class="@style">
+
+                            <tr class="@klasse">
                                 <td>@count</td>
                                 <td>@d.Name</td>
                                 <td>@d.PunkteSchulvoting</td>
                                 <td>@d.PunktePublikumsvoting</td>
                                 <td>@(d.PunkteSchulvoting + d.PunktePublikumsvoting)</td>
-                                <td>@preisgeld</td>
+                                <td>@preis</td>
                             </tr>
+
                             count++;
                         }
-                        <!-- TOP 6 -->
-                        
                     </tbody>
                 </table>
             </div>
 
             <!-- ACTIONS -->
             <div class="actions">
-                <button class="danger">Publikumsvoting jetzt beenden</button>
-                <button class="export">Gesamtauswertung exportieren</button>
+                <button class="danger" @onclick="BeendeVoting">
+                    ⛔ Voting jetzt beenden
+                </button>
+
+                <button class="export" @onclick="ExportExcel">
+                    📥 Excel exportieren
+                </button>
             </div>
 
         </div>
 
-
     </Authorized>
-    <NotAuthorized>
-        <p style="color:red">Sie sind nicht berechtigt, auf diese Seite zuzugreifen. Bitte <a href="/adminlogin">loggen Sie sich ein</a>.</p>
-    </NotAuthorized>
 </AuthorizeView>
 
+@code {
 
-@code{
+    List<Diplomarbeit> diplomarbeiten = new();
+    List<Diplomarbeit> AnzeigeListe = new();
 
-    private string currentPage = "/admin";
-    DbWrapperMySqlV2 dbWrapper = DbWrapperMySqlV2.Wrapper;
-    List<Diplomarbeit> diplomarbeiten = [];
-    string style = "";
-    string preisgeld = "";
+    AppSettings settings = new();
+
+    bool VotingLaeuft;
+    DateTime VotingEndInput;
+
     int count = 1;
-    double max = 0;
+
+    System.Threading.Timer? refreshTimer;
+    bool disposed = false;
 
     protected override async Task OnInitializedAsync()
     {
-        var state = await Auth.GetAuthenticationStateAsync();
-        var user = state.User;
-        Console.WriteLine("Home - IsAuthenticated: " + user.Identity?.IsAuthenticated);
-        Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
-        await LoadDataAsync();
+        await LoadAll();
 
-        // while (true)
-        // {
-        //     count = 1;
-        //     await LoadDataAsync();
-        //     StateHasChanged();
-        //     await Task.Delay(3000); // alle 3 Sekunden
-        // }
+        if (VotingLaeuft)
+        {
 
+            refreshTimer = new Timer(async _ =>
+            {
+                if (disposed) return;
 
+                await InvokeAsync(async () =>
+                {
+                    await LoadAll();
+                    StateHasChanged();
+                });
 
+            }, null, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3));
+        }
+        else
+        {
+            refreshTimer?.Dispose();
+        }
     }
-    async Task LoadDataAsync()
+
+    async Task LoadAll()
     {
-        count = 1;
+        settings = AppSettings.Load();
+
+        VotingLaeuft = settings.VotingActive &&
+                       DateTime.Now < settings.VotingEnd;
+
+        VotingEndInput = settings.VotingEnd;
+
         diplomarbeiten = await Diplomarbeit.LoadDiplomarbeitenAsync();
+        Diplomarbeit.LoadPublikumPoints(diplomarbeiten);
 
+        if (!VotingLaeuft)
+            CalculateLinearPoints(diplomarbeiten);
+
+        AnzeigeListe = diplomarbeiten
+            .OrderByDescending(d => d.PunkteSchulvoting + d.PunktePublikumsvoting)
+            .ToList();
     }
-    void btn_ZeitAendern()
-    {
 
-    }
-    void CalculateLinearPoints(List<Diplomarbeit> diplomarbeiten)
+    void CalculateLinearPoints(List<Diplomarbeit> list)
     {
-        int max = diplomarbeiten.Max(d => d.PunktePublikumsvoting);
+        int max = list.Max(d => d.PunktePublikumsvoting);
 
-        foreach (Diplomarbeit d in diplomarbeiten)
+        foreach (var d in list)
         {
             int roh = d.PunktePublikumsvoting;
 
@@ -163,11 +200,22 @@
         }
     }
 
-    void GoTo(string page)
+    async void SaveVotingTime()
     {
-        currentPage = page;
-        Nav.NavigateTo(currentPage);
-
+        AppSettings.Update(VotingEndInput, true);
+        await LoadAll();
     }
-   
+
+    async void BeendeVoting()
+    {
+        AppSettings.Update(DateTime.Now, false);
+        await LoadAll();
+    }
+
+    void ExportExcel()
+    {
+        // bewusst nur vorbereitet – Backend kannst du später ergänzen
+
+        Console.WriteLine("Excel Export ausgelöst");
+    }
 }
