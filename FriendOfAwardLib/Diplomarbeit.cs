@@ -5,7 +5,7 @@ public class Diplomarbeit
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public int PunkteSchulvoting { get; private set; }
-    public int PunktePublikumsvoting { get; private set; }
+    public int PunktePublikumsvoting { get; set; }
 
     public Diplomarbeit(int id, string name, int punkteSchulvoting, int punktePublikumsvoting)
     {
@@ -26,7 +26,7 @@ public class Diplomarbeit
                 List<Diplomarbeit> diplomarbeiten = new();
 
                 string sql =
-                    "SELECT id, diplomarbeit,  FROM diplomarbeiten";
+                    "SELECT id, diplomarbeit, punkteSchulvoting, punktePublikumsvoting FROM diplomarbeiten";
 
                 DataTable dt = wrapper.RunQuery(sql);
 
@@ -35,8 +35,8 @@ public class Diplomarbeit
                     Diplomarbeit da = new(
                         Convert.ToInt32(row[0]),
                         row[1]?.ToString() ?? string.Empty,
-                        Convert.ToInt32(row[3]),
-                        Convert.ToInt32(row[4])
+                        Convert.ToInt32(row[2]),
+                        Convert.ToInt32(row[3])
                     );
 
                     diplomarbeiten.Add(da);
