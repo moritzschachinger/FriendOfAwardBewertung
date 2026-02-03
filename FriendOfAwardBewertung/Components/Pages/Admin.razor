@@ -11,9 +11,6 @@
 <h1>📊 Admin Dashboard</h1>
 <AuthorizeView>
     <Authorized>
-
-
-
         <div class="dashboard">
 
             <!-- HEADER -->
@@ -42,7 +39,7 @@
                 <div class="stat-card time-card">
                     <span class="label">Voting endet um</span>
                     <span class="time">18:30</span>
-                    <button class="small-btn">Zeit ändern</button>
+                    <button class="small-btn" @onclick="btn_ZeitAendern">Zeit ändern</button>
                 </div>
             </div>
 
@@ -62,14 +59,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(Diplomarbeit d in diplomarbeiten)
+                        @foreach(Diplomarbeit d in diplomarbeiten.OrderByDescending(d => (d.PunkteSchulvoting + d.PunktePublikumsvoting)))
                         {
-                            @if(d.Id <= 6)
+                            
+                            @if(count <= 6)
                             {
                                 style = "top6";
                                 preisgeld = "🏆 Finalist";
                             }
-                            else if(d.Id>=7 && d.Id <= 13)
+                            else if(count>=7 && d.Id <= 13)
                             {
                                 style = "mid";
                                 preisgeld = "💰 100 €";
@@ -80,13 +78,14 @@
                                 preisgeld = "🎁 50 €";
                             }
                             <tr class="@style">
-                                <td>@d.Id</td>
+                                <td>@count</td>
                                 <td>@d.Name</td>
-                                <td>38</td>
-                                <td>30</td>
-                                <td>68</td>
+                                <td>@d.PunkteSchulvoting</td>
+                                <td>@d.PunktePublikumsvoting</td>
+                                <td>@(d.PunkteSchulvoting + d.PunktePublikumsvoting)</td>
                                 <td>@preisgeld</td>
                             </tr>
+                            count++;
                         }
                         <!-- TOP 6 -->
                         
@@ -117,6 +116,7 @@
     List<Diplomarbeit> diplomarbeiten = [];
     string style = "";
     string preisgeld = "";
+    int count = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -126,11 +126,26 @@
         Console.WriteLine("Home - Roles: " + string.Join(',', user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
         await LoadDataAsync();
 
+        // while (true)
+        // {
+        //     count = 1;
+        //     await LoadDataAsync();
+        //     StateHasChanged();
+        //     await Task.Delay(3000); // alle 3 Sekunden
+        // }
+
+
+
     }
     async Task LoadDataAsync()
     {
+        count = 1;
         diplomarbeiten = await Diplomarbeit.LoadDiplomarbeitenAsync();
 
+    }
+    void btn_ZeitAendern()
+    {
+        
     }
     void GoTo(string page)
     {
