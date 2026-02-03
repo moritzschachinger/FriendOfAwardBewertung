@@ -51,31 +51,7 @@ public class Diplomarbeit
             }
         });
     }
-    public static bool LoadPublikumPoints(List<Diplomarbeit> diplomarbeiten)
-    {
-        if(diplomarbeiten == null || diplomarbeiten.Count == 0)
-        {
-            return false;
-        }
-        DbWrapperMySqlV2 wrapper = DbWrapperMySqlV2.Wrapper;
-        try
-        {
-            DataTable dt = wrapper.RunQuery("SELECT punkte FROM diplomarbeiten_punkte");
-            if(dt == null || dt.Rows.Count == 0)
-            {
-                return false;
-            }
-            for (int i = 0; i < dt.Rows.Count && i < diplomarbeiten.Count; i++)
-            {
-                diplomarbeiten[i].PunktePublikumsvoting = Convert.ToInt32(dt.Rows[i][0]);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        return true;
-    }
+
 
 }
 
