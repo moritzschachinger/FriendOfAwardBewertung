@@ -43,7 +43,7 @@
     private string password = "";
     private string error = "";
 
-    
+
     public void Enter(KeyboardEventArgs e)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
@@ -77,17 +77,31 @@
         try
         {
             DbWrapperMySqlV2 wrapper = DbWrapperMySqlV2.Wrapper;
-            string sql = $"SELECT email, password_hash FROM admin_users WHERE email = '{email}'";
+            DataTable dt = new();
+            try
+            {
+                string sql = $"SELECT email, password FROM admin_users WHERE email = '{email}'";
+                dt = wrapper.RunQuery(sql);
+            }
+            catch (Exception)
+            {
 
-            DataTable dt = wrapper.RunQuery(sql);
+                throw;
+            }
 
-            if (dt == null || dt.Rows.Count == 0)return false;
 
-            bool ok = BCrypt.Net.BCrypt.Verify(password, dt.Rows[0][1].ToString());
-            if (!ok)
+            if (dt == null || dt.Rows.Count == 0) return false;
+
+            if (password != dt.Rows[0][1].ToString())
             {
                 return false;
             }
+
+            // bool ok = BCrypt.Net.BCrypt.Verify(password, dt.Rows[0][1].ToString());
+            // if (!ok)
+            // {
+            //     return false;
+            // }
 
         }
         catch (Exception ex)
