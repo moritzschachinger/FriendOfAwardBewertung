@@ -8,9 +8,17 @@ public class AppSettings
     public static AppSettings Load()
     {
         DbWrapperMySqlV2 db = DbWrapperMySqlV2.Wrapper;
-
-        DataTable dt = db.RunQuery(
+        DataTable dt = new();
+        try
+        {
+            dt = db.RunQuery(
             "SELECT voting_active, voting_end FROM foa_app_settings LIMIT 1");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        
 
         DataRow row = dt.Rows[0];
 
@@ -24,12 +32,19 @@ public class AppSettings
     public static void Update(DateTime endTime, bool active)
     {
         DbWrapperMySqlV2 db = DbWrapperMySqlV2.Wrapper;
-
-        db.RunNonQuery($"""
+        try
+        {
+            db.RunNonQuery($"""
             UPDATE foa_app_settings
             SET voting_end = '{endTime:yyyy-MM-dd HH:mm:ss}',
                 voting_active = {(active ? 1 : 0)},
                 updated_at = NOW()
         """);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        
     }
 }

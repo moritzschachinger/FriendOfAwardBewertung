@@ -10,7 +10,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider Auth
-
+@inject IJSRuntime JS
 
 
 
@@ -241,17 +241,27 @@
         await LoadAll();
     }
 
+
     async void BeendeVoting()
     {
         AppSettings.Update(DateTime.Now, false);
         await LoadAll();
     }
 
-    void ExportExcel()
+    async Task ExportExcel()
     {
-        // bewusst nur vorbereitet – Backend kannst du später ergänzen
+        var sortiert = diplomarbeiten
+       .OrderByDescending(d => d.PunkteSchulvoting + d.PunktePublikumsvoting)
+       .ToList();
 
-        Console.WriteLine("Excel Export ausgelöst");
+        byte[] file = ExcelExportHelper.CreateExport(sortiert);
+
+        await JS.InvokeVoidAsync(
+            "downloadFile",
+            "FriendsOfAward_Gesamtauswertung.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            file
+        );
     }
 
 

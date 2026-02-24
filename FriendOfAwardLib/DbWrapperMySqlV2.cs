@@ -98,11 +98,13 @@ public class DbWrapperMySqlV2
             numRecords = command.ExecuteNonQuery();  // könnte Exception auslösen
             Close();                                 // würde dann nicht ausgeführt
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
             Close();                 // Nur Verbindung schließen
             throw;                   // Rufer soll aber die Exception erhalten
         }
+        
         return numRecords;
     }
 
