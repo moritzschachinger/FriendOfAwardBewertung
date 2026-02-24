@@ -11,7 +11,7 @@ public class Diplomarbeit
     {
         Id = id;
         Name = name;
-        PunktePublikumsvoting = punkteSchulvoting;
+        PunkteSchulvoting = punkteSchulvoting;
         PunktePublikumsvoting = punktePublikumsvoting;
     }
 
