@@ -211,7 +211,11 @@
 
         diplomarbeiten = await Diplomarbeit.LoadDiplomarbeitenAsync();
         Diplomarbeit.LoadPublikumPoints(diplomarbeiten);
-
+        foreach (Diplomarbeit d in diplomarbeiten)
+        {
+            Console.WriteLine($"Name: {d.Name}      | {d.PunktePublikumsvoting} | {d.PunkteSchulvoting}");
+        }
+        Console.WriteLine("#######################################################################################");
         if (!VotingLaeuft)
             CalculateLinearPoints(diplomarbeiten);
 
@@ -222,6 +226,9 @@
 
     void CalculateLinearPoints(List<Diplomarbeit> list)
     {
+        if(list == null || list.Count == 0)
+            return;
+
         int max = list.Max(d => d.PunktePublikumsvoting);
 
         foreach (var d in list)

@@ -19,7 +19,14 @@ public class AppSettings
             Console.WriteLine(ex.Message);
         }
         
-
+        if(dt == null || dt.Rows.Count == 0)
+        {
+            return new AppSettings
+            {
+                VotingActive = false,
+                VotingEnd = DateTime.MinValue
+            };
+        }
         DataRow row = dt.Rows[0];
 
         return new AppSettings

@@ -26,8 +26,16 @@ public class Diplomarbeit
 
                 string sql =
                     "SELECT id, diplomarbeit, punkteSchulvoting, punktePublikumsvoting FROM diplomarbeiten";
-
-                DataTable dt = wrapper.RunQuery(sql);
+                DataTable dt = new();
+                try
+                {
+                    dt = wrapper.RunQuery(sql);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                
 
                 foreach (DataRow row in dt.Rows)
                 {
