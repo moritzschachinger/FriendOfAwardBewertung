@@ -20,7 +20,6 @@ public class Diplomarbeit
         return await Task.Run(() =>
         {
             DbWrapperMySqlV2 wrapper = DbWrapperMySqlV2.Wrapper;
-
             try
             {
                 List<Diplomarbeit> diplomarbeiten = new();
@@ -42,10 +41,12 @@ public class Diplomarbeit
                     diplomarbeiten.Add(da);
                 }
 
+                wrapper.Close();
                 return diplomarbeiten;
             }
             catch (Exception ex)
             {
+                wrapper.Close();
                 Console.WriteLine(ex.Message);
                 return new List<Diplomarbeit>(); // besser als null
             }

@@ -281,6 +281,7 @@
 
     async Task ImportExcel()
     {
+        dbWrapper.Open();
         try
         {
             if (uploadedFile == null)
@@ -291,6 +292,7 @@
 
             // Alte Daten löschen
             dbWrapper.RunNonQuery("DELETE FROM diplomarbeiten");
+            dbWrapper.RunNonQuery("TRUNCATE TABLE diplomarbeiten_punkte");
 
             using var browserStream = uploadedFile.OpenReadStream(5_000_000);
             using var ms = new MemoryStream();
@@ -323,13 +325,19 @@
                 string sql = $"INSERT INTO diplomarbeiten (id, Diplomarbeit, namenSchüler, punkteSchulvoting) " +
                              $"VALUES ({laufendeNummer}, '{titel}', '{schueler}', {punkte})";
 
+                string sql2 = "INSERT INTO diplomarbeiten_punkte (id, diplomarbeit_id, punkte)"+
+                $"VALUES (DEFAULT, {laufendeNummer}, 0)";
+
                 try
                 {
                     dbWrapper.RunNonQuery(sql);
+                    dbWrapper.RunNonQuery(sql2);
                     loadedCount++;
+                    dbWrapper.Close();
                 }
                 catch (Exception ex)
                 {
+                    dbWrapper.Close();
                     Console.WriteLine("Fehler beim Speichern in DB: " + ex.Message);
                     importError = "Fehler beim Speichern in der Datenbank.";
                     return;
