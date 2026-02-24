@@ -47,7 +47,9 @@
                 Offen: @remainingFavorites Favoriten, @remainingTopfavorit Topfavorit
             </div>
 
-            <button class="submit-button" @onclick="Btn_BewertungAbsenden">
+            <button class="submit-button"
+                    @onclick="Btn_BewertungAbsenden"
+                    disabled="@IsSubmitDisabled">
                 Bewertung absenden
             </button>
 
@@ -102,7 +104,7 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <h1 style="color:red">Nicht berechtigt, diese Seite zu betreten. Bitte <a href="/adminlogin"></a>>loggen Sie sich ein</h1>
+        <h1 style="color:red">Nicht berechtigt, diese Seite zu betreten</h1>
     </NotAuthorized>
 </AuthorizeView>
         
@@ -118,6 +120,7 @@
     private List<Diplomarbeit> diplomarbeiten = new();
     private int? topfavorit = null;
     private bool showConfirm = false;
+    bool IsSubmitDisabled = false;
 
     private int remainingFavorites => 5 - favorites.Count;
     private int remainingTopfavorit => topfavorit == null ? 1 : 0;
@@ -232,6 +235,7 @@
         {
             Console.WriteLine(ex.Message);
         }
+        IsSubmitDisabled = true;
     }
 
     private void CancelConfirm()
